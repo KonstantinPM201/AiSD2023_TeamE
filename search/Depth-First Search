@@ -1,0 +1,35 @@
+void dfs(Graph& g, int v) {
+    EdgeNode* p;
+    int y;
+
+    if (g.finished) return;
+
+    g.discovered[v] = true;
+    g.time += 1;
+    g.entry_time[v] = g.time;
+
+    process_vertex_early(v);
+
+    p = g.edges[v];
+
+    while (p != nullptr) {
+        y = p->y;
+        if (!g.discovered[y]) {
+            g.parent[y] = v;
+            process_edge(v, y);
+            dfs(g, y);
+        } else if (!g.processed[y] || g.directed) {
+            process_edge(v, y);
+        }
+
+        if (g.finished) return;
+
+        p = p->next;
+    }
+
+    process_vertex_late(v);
+
+    g.time += 1;
+    g.exit_time[v] = g.time;
+    g.processed[v] = true;
+}
